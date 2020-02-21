@@ -28,27 +28,27 @@ if [ ! -d $dir ]; then
 fi
 
 # 构建镜像
-docker build -f $dir/Dockerfile -t louisbb/alinode:$tag context
+docker build -f $dir/Dockerfile -t louisbb/alinode-chromium:$tag context
 
 echo
-echo "✨ louisbb/alinode:$tag is done!"
+echo "✨ louisbb/alinode-chromium:$tag is done!"
 echo
 
 if [ $# -gt 1 ]; then
   for ((i=2; i<=$#; i++)); do
     echo "Create tag $tag -> ${!i}"
-    docker tag louisbb/alinode:$tag louisbb/alinode:${!i}
+    docker tag louisbb/alinode-chromium:$tag louisbb/alinode-chromium:${!i}
   done
 fi
 
 echo
 
 if [ "$version" = "$tagname" ]; then
-  docker images louisbb/alinode:$tag*
+  docker images louisbb/alinode-chromium:$tag*
 else
-  docker images louisbb/alinode:$version*-$tagname
+  docker images louisbb/alinode-chromium:$version*-$tagname
 fi
 
 echo
-docker run --rm louisbb/alinode:$tag sh -c 'echo "alinode v$ALINODE_VERSION" && echo "node $(node -v)" && echo "npm v$(npm -v)" && echo "yarn v$(yarn -v)" && echo "pm2 v$(pm2 -v)"'
+docker run --rm louisbb/alinode-chromium:$tag sh -c 'echo "alinode v$ALINODE_VERSION" && echo "node $(node -v)" && echo "npm v$(npm -v)" && echo "yarn v$(yarn -v)" && echo "pm2 v$(pm2 -v)"'
 echo

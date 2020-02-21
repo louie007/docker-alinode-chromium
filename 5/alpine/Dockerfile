@@ -9,7 +9,8 @@ ENV ALINODE_VERSION=5.13.0 \
     ALINODE_CONFIG=alinode.config.json \
     NODE_ENV=production \
     HOME=/home/node \
-    APP_DIR=/home/node/app
+    APP_DIR=/home/node/app \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 
 # 从官网镜像中复制 alinode 包含了 agenthub 无需安装
 COPY --from=registry.cn-hangzhou.aliyuncs.com/aliyun-node/alinode:5.13.0-alpine /usr/local /usr/local
@@ -18,9 +19,13 @@ COPY --from=registry.cn-hangzhou.aliyuncs.com/aliyun-node/alinode:5.13.0-alpine 
 RUN addgroup -g 1000 node \
   && adduser -u 1000 -G node -s /bin/sh -D node \
   && sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories \
+  && echo @edge http://mirrors.aliyun.com/alpine/edge/community >> /etc/apk/repositories \
+  && echo @edge http://mirrors.aliyun.com/alpine/edge/main >> /etc/apk/repositories \
   && apk add -U tzdata \
   && apk add --no-cache libstdc++ ca-certificates curl \
   && apk add --no-cache --virtual .build-deps-yarn gnupg \
+  && apk add --no-cache chromium@edge nss@edge freetype@edge freetype-dev@edge \
+  && apk add --no-cache harfbuzz@edge ca-certificates@edge ttf-freefont@edge libstdc++@edge \
   && for key in \
     6A010C5166006599AA17F08146C2130DFD2497F5 \
   ; do \
